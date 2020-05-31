@@ -1,0 +1,58 @@
+{% extends 'base/index.html' %}
+{% load static %}
+
+{% block title %}
+    批量执行
+{% endblock %}
+
+{% block content %}
+    <main class="dash-content">
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="card spur-card">
+                    <div class="card-header">
+                        <div class="spur-card-icon">
+                            <i class="fas fa-tasks"></i>
+                        </div>
+                        <div class="spur-card-title">批量操作</div>
+                    </div>
+                    <div class="card-body ">
+                        <div class="row">
+                            <div class="col-5">
+                                <form class="form-group" action="">
+                                    <div class="form-group">
+                                        <label for="host_name">主机名</label>
+                                        <input class="form-control" type="text" name="host_name" id="host_name">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="host_group">主机组</label>
+                                        <input class="form-control" type="text" name="host_group" id="host_group">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="command">命令</label>
+                                        <input class="form-control" type="text" name="command" id="command">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="playbook">剧本</label>
+                                        <input class="form-control" type="text" name="playbook" id="playbook">
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="col-1"></div>
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label class="font-weight-bold" for="result">输出结果:</label>
+                                </div>
+                                <div class="form-group">
+                                    <textarea name="result" id="result" cols="80" rows="20" readonly>123</textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+{% endblock %}
+
+

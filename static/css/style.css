@@ -1,0 +1,10 @@
+.login-center {
+    height: 100vh;
+}
+
+.login-title{
+    position: absolute;
+    color: blue;
+    top: 15%;
+    left: 45%;
+}

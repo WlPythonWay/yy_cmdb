@@ -1,0 +1,152 @@
+{% extends 'base/index.html' %}
+{% load static %}
+
+{% block title %}
+    用户管理
+{% endblock %}
+
+{% block content %}
+    <main class="dash-content">
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="card spur-card">
+                    <div class="card-header">
+                        <div class="spur-card-icon">
+                            <i class="fas fa-user-alt"></i>
+                        </div>
+                        <div class="spur-card-title">用户管理</div>
+                        <div class="spur-card-menu">
+                            <button class="btn btn-primary" data-toggle="modal"
+                                    data-target="#addModal">
+                                添加
+                            </button>
+
+                            <div class="modal fade" id="addModal" tabindex="-1"
+                                 role="dialog"
+                                 aria-labelledby="addModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="addModalLabel">添加用户</h5>
+                                            <button type="button" class="close" data-dismiss="modal"
+                                                    aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form class="form-group" method="post"
+                                                  action="{% url 'account:add' %}" novalidate>
+                                                {% csrf_token %}
+                                                <div class="form-group">
+                                                    <label>用户名</label>
+                                                    <input type="text" class="form-control" name="username"
+                                                           placeholder="Username">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>密码</label>
+                                                    <input type="password" class="form-control"
+                                                           name="password"
+                                                           placeholder="Password">
+                                                </div>
+
+                                                <button type="submit" class="btn btn-primary">保存</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body ">
+                        {% for user in users %}
+                            <div class="row bg-light mb-3">
+                                <div class="col-3 p-2">{{ user.get_username }}</div>
+                                {% if user.is_superuser %}
+                                    <div class="col-3 p-2">管理员</div>
+                                {% else %}
+                                    <div class="col-3 p-2">普通员工</div>
+                                {% endif %}
+                                {% if user.is_active %}
+                                    <div class="col-3 p-2">已激活</div>
+                                {% else %}
+                                    <div class="col-3 p-2">未激活</div>
+                                {% endif %}
+                                {% if current_user.is_superuser %}
+                                    <div class="col-3 p-2">
+                                        <button class="btn btn-primary" data-toggle="modal"
+                                                data-target="#updateModal{{ user.id }}">
+                                            修改
+                                        </button>
+
+                                        <div class="modal fade" id="updateModal{{ user.id }}" tabindex="-1"
+                                             role="dialog"
+                                             aria-labelledby="updateModal{{ user.id }}lLabel" aria-hidden="true">
+                                            <div class="modal-dialog" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="updateModal{{ user.id }}Label">
+                                                            修改密码</h5>
+                                                        <button type="button" class="close" data-dismiss="modal"
+                                                                aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <form class="form-group" method="post"
+                                                              action="{% url 'account:manager' %}" novalidate>
+                                                            {% csrf_token %}
+                                                            <div class="form-group">
+                                                                <label>用户名</label>
+                                                                <input type="text" class="form-control" name="username"
+                                                                       placeholder="" value="{{ user }}" readonly>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label>新密码</label>
+                                                                <input type="password" class="form-control"
+                                                                       name="password"
+                                                                       placeholder="New Password">
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label>确认密码</label>
+                                                                <input type="password" class="form-control"
+                                                                       name="confirmPassword"
+                                                                       placeholder="Confirm Password">
+                                                            </div>
+                                                            <button type="submit" class="btn btn-primary">保存</button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <button class="btn btn-danger delete_user" type="button"
+                                                value="{{ user.username }}">删除
+                                        </button>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+{% endblock %}
+
+{% block js %}
+    <script>
+        $('.delete_user').click(function () {
+            var username = $(this).val();
+            $.ajax({
+                type: "GET",
+                url: "/account/manager",
+                data: {'username': username},
+                success: function (data) {
+                    if (data === 'ok') {
+                        window.location.reload()
+                    }
+                }
+            })
+        })
+    </script>
+{% endblock %}

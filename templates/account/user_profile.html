@@ -1,0 +1,50 @@
+{% extends 'base/index.html' %}
+{% load static %}
+
+{% block title %}
+    用户详情
+{% endblock %}
+
+{% block content %}
+    <main class="dash-content">
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="card spur-card">
+                    <div class="card-header">
+                        <div class="spur-card-icon">
+                            <i class="fas fa-user-alt"></i>
+                        </div>
+                        <div class="spur-card-title">{{ user }}的主页</div>
+                    </div>
+                    <div class="card-body ">
+                        <form method="post" action="{% url 'account:my-page' %}" enctype="multipart/form-data" novalidate>
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label>用户名</label>
+                                <input type="text" class="form-control" name="username"
+                                       placeholder="{{ user }}" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label>新密码</label>
+                                <input type="password" class="form-control" name="password"
+                                       placeholder="New Password">
+                            </div>
+                            <div class="form-group">
+                                <label>确认密码</label>
+                                <input type="password" class="form-control" name="confirmPassword"
+                                       placeholder="Confirm Password">
+                                {% if error_message %}
+                                    <small class="text-danger">{{ error_message }}</small>
+                                {% endif %}
+
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">保存</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+{% endblock %}
+

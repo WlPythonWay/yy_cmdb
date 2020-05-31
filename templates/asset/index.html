@@ -1,0 +1,187 @@
+{% extends 'base/index.html' %}
+{% load static %}
+
+{% block title %}
+    资产管理
+{% endblock %}
+
+{% block content %}
+    <main class="dash-content">
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="card spur-card">
+                    <div class="card-header">
+                        <div class="spur-card-icon">
+                            <i class="fas fa-list-alt"></i>
+                        </div>
+                        <div class="spur-card-title">资产列表</div>
+                        <div class="spur-card-menu">
+                            <button class="btn btn-primary" data-toggle="modal"
+                                    data-target="#addModal">
+                                添加
+                            </button>
+
+                            <div class="modal fade" id="addModal" tabindex="-1"
+                                 role="dialog" aria-labelledby="addModalLabel"
+                                 aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="addModalLabel">添加资产</h5>
+                                            <button type="button" class="close" data-dismiss="modal"
+                                                    aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form class="form-group" method="post"
+                                                  action="{% url 'asset:index' %}" novalidate>
+                                                {% csrf_token %}
+                                                {% include 'asset/add_form.html' %}
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body ">
+                        <div class="row bg-light mb-3">
+                            <div class="col-2 p-2">主机名</div>
+                            <div class="col-2 p-2">主机组</div>
+                            <div class="col-2 p-2">内网IP</div>
+                            <div class="col-2 p-2">外网IP</div>
+                            <div class="col-1 p-2">CPU</div>
+                            <div class="col-1 p-2">内存</div>
+                        </div>
+                        {% for asset in asset_list %}
+                            <div class="row bg-light mb-3">
+                                <div class="col-2 p-2">{{ asset.host_name }}</div>
+                                {% if asset.host_group %}
+                                    <div class="col-2 p-2">{{ asset.host_group }}</div>
+                                {% else %}
+                                    <div class="col-2 p-2">无</div>
+                                {% endif %}
+                                <div class="col-2 p-2">{{ asset.internal_ip }}</div>
+                                {% if asset.external_ip %}
+                                    <div class="col-2 p-2">{{ asset.external_ip }}</div>
+                                {% else %}
+                                    <div class="col-2 p-2">无</div>
+                                {% endif %}
+                                <div class="col-1 p-2">{{ asset.host_cpu }}</div>
+                                <div class="col-1 p-2">{{ asset.host_memory }}</div>
+
+                                {% if current_user.is_superuser %}
+                                    <div class="col-2 p-2">
+                                        <button class="btn btn-primary" data-toggle="modal"
+                                                data-target="#updateModal{{ asset.id }}">
+                                            修改
+                                        </button>
+
+                                        <div class="modal fade" id="updateModal{{ asset.id }}" tabindex="-1"
+                                             role="dialog"
+                                             aria-labelledby="updateModal{{ asset.id }}lLabel" aria-hidden="true">
+                                            <div class="modal-dialog" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="updateModal{{ asset.id }}Label">
+                                                            修改{{ asset.host_name }}</h5>
+                                                        <button type="button" class="close" data-dismiss="modal"
+                                                                aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <form class="form-group" method="post"
+                                                              action="{% url 'asset:update' %}"
+                                                              novalidate>
+                                                            {% csrf_token %}
+                                                            <div class="form-group">
+                                                                <label>主机名</label>
+                                                                <input type="text" name="host_name" placeholder="主机名"
+                                                                       class="form-control"
+                                                                       value="{{ asset.host_name }}"
+                                                                       id="id_host_name" readonly>
+                                                            </div>
+
+                                                            <div class="form-group">
+                                                                <label>主机组</label>
+                                                                <input type="text" name="host_group" placeholder="主机组"
+                                                                       class="form-control" id="id_host_group"
+                                                                       value="{{ asset.host_group }}">
+                                                            </div>
+
+                                                            <div class="form-group">
+                                                                <label>内网IP</label>
+                                                                <input type="text" name="internal_ip" placeholder="内网IP"
+                                                                       class="form-control" required=""
+                                                                       id="id_internal_ip"
+                                                                       value="{{ asset.internal_ip }}">
+                                                            </div>
+
+                                                            <div class="form-group">
+                                                                <label>外网IP</label>
+                                                                <input type="text" name="external_ip" placeholder="外网IP"
+                                                                       class="form-control" id="id_external_ip"
+                                                                       value="{{ asset.external_ip }}">
+                                                            </div>
+
+                                                            <div class="form-group">
+                                                                <label>CPU</label>
+                                                                <input type="number" name="host_cpu" placeholder="CPU"
+                                                                       class="form-control" required=""
+                                                                       id="id_host_cpu" value="{{ asset.host_cpu }}">
+                                                            </div>
+
+                                                            <div class="form-group">
+                                                                <label>内存</label>
+                                                                <input type="number" name="host_memory" placeholder="内存"
+                                                                       class="form-control" required=""
+                                                                       id="id_host_memory"
+                                                                       value="{{ asset.host_memory }}">
+                                                            </div>
+                                                            {% if form.errors %}
+                                                                <div class="form-group">
+                                                                    <small>{{ form.errors }}</small>
+                                                                </div>
+                                                            {% endif %}
+                                                            <button type="submit" class="btn btn-primary">保存</button>
+
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <button class="btn btn-danger delete_asset" type="button"
+                                                value="{{ asset.id }}">删除
+                                        </button>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+{% endblock %}
+
+{% block js %}
+    <script>
+        $('.delete_asset').click(function () {
+            var id = $(this).val();
+            $.ajax({
+                type: "GET",
+                url: "/asset/",
+                data: {'id': id},
+                success: function (data) {
+                    if (data === 'ok') {
+                        window.location.reload()
+                    }
+                }
+            })
+        })
+    </script>
+{% endblock %}
