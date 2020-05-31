@@ -11,6 +11,14 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+from yy_cmdb.env import ENV
+
+if ENV == 'dev':
+    DATABASES_URL = '127.0.0.1'
+    PORT = 3307
+else:
+    DATABASES_URL = 'rm-8vb6abm5q385918f258870.mysql.zhangbei.rds.aliyuncs.com'
+    PORT = 3306
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -77,10 +85,21 @@ WSGI_APPLICATION = 'yy_cmdb.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'cmdb',
+        'USER': 'wanliang',
+        'PASSWORD': 'Wanliang2020',
+        'HOST': DATABASES_URL,
+        'PORT': PORT,
     }
 }
 
