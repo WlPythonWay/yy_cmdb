@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-ENV = 'dev'
+ENV = 'prod'
+Debug = False
 
