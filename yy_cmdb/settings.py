@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
-from yy_cmdb.env import ENV
+from yy_cmdb.env import ENV, Debug
 
 if ENV == 'dev':
     DATABASES_URL = '127.0.0.1'
@@ -31,7 +31,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '3%qq(8b$znxnnn0p3=sfe&zmvke)=$h^)k#9gke0y))-63&(0g'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = Debug
 
 ALLOWED_HOSTS = ['39.101.189.30']
 
