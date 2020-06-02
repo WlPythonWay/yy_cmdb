@@ -2,95 +2,109 @@
 {% load static %}
 
 {% block title %}
-    批量执行
+批量执行
 {% endblock %}
 
 {% block content %}
-    <main class="dash-content">
-        <div class="row">
-            <div class="col-xl-12">
-                <div class="card spur-card">
-                    <div class="card-header">
-                        <div class="spur-card-icon">
-                            <i class="fas fa-tasks"></i>
-                        </div>
-                        <div class="spur-card-title">批量操作</div>
+<main class="dash-content">
+    <div class="row">
+        <div class="col-xl-12">
+            <div class="card spur-card">
+                <div class="card-header">
+                    <div class="spur-card-icon">
+                        <i class="fas fa-tasks"></i>
                     </div>
-                    <div class="card-body ">
-                        <div class="row">
-                            <div class="col-sm-5">
-                                <form class="form-group form-action" method="post" action="{% url 'manyhand:index' %}">
-                                    {% csrf_token %}
-                                    <div class="form-group">
-                                        <label for="hostNameSelect">主机名</label>
-                                        <select class="custom-select host-name-select" id="hostNameSelect"
-                                                name="host_name">
-                                            {% for asset in asset_list %}
-                                                <option selected>{{ asset.host_name }}</option>
-                                            {% endfor %}
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="hostGroupSelect">主机组</label>
-                                        <select class="custom-select host-group-select" id="hostGroupSelect"
-                                                name="host_group">
-                                            {% for asset in asset_list %}
-                                                <option selected>{{ asset.host_group }}</option>
-                                            {% endfor %}
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="CommandInput">命令</label>
-                                        <input class="form-control command-input" type="text" name="command"
-                                               id="CommandInput">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="PlaybookSelect">剧本</label>
-                                        <select class="custom-select playbook-select" name="playbook"
-                                                id="PlaybookSelect">
-                                            <option selected>Choose...</option>
-                                            <option selected>a</option>
-                                        </select>
-                                    </div>
+                    <div class="spur-card-title">批量操作</div>
+                </div>
+                <div class="card-body ">
+                    <div class="row">
+                        <div class="col-sm-5">
+                            <form class="form-group form-action" method="post" action="{% url 'manyhand:index' %}">
+                                {% csrf_token %}
+                                {% if error_messages %}
+                                    <p><small class="text-danger">{{ error_messages }}</small></p>
+                                {% endif %}
+                                <div class="form-group">
+                                    <label for="hostNameSelect">主机名</label>
+                                    <select class="custom-select host-name-select" id="hostNameSelect"
+                                            name="host_name">
+                                        {% for asset in asset_list %}
+                                        <option selected>{{ asset.host_name }}</option>
+                                        {% endfor %}
+                                        <option selected></option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="hostGroupSelect">主机组</label>
+                                    <select class="custom-select host-group-select" id="hostGroupSelect"
+                                            name="host_group">
+                                        {% for asset in asset_list %}
+                                        <option selected>{{ asset.host_group }}</option>
+                                        {% endfor %}
+                                        <option selected></option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="CommandInput">命令</label>
+                                    <input class="form-control command-input" type="text" name="command"
+                                           id="CommandInput">
+                                </div>
+                                <div class="form-group">
+                                    <label for="PlaybookSelect">剧本</label>
+                                    <select class="custom-select playbook-select" name="playbook"
+                                            id="PlaybookSelect">
+                                        <option selected>test</option>
+                                        <option selected></option>
+                                    </select>
+                                </div>
 
-                                    <button class="btn btn-info form-submit" type="submit">提交</button>
-                                </form>
+                                <button class="btn btn-info form-submit" type="submit">提交</button>
+                            </form>
+                        </div>
+                        <div class="col-sm-1"></div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="font-weight-bold" for="result">输出结果:</label>
                             </div>
-                            <div class="col-sm-1"></div>
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label class="font-weight-bold" for="result">输出结果:</label>
-                                </div>
-                                <div class="form-group">
-                                    <textarea name="result" id="result" cols="50" rows="20" readonly>123</textarea>
-                                </div>
+                            <div class="form-group">
+                                    <textarea name="result" id="result" cols="50" rows="20" readonly>{% for i in result %}
+主机名：{{ i.host }}
+
+执行命令：{{ i.cmd }}
+
+标准输出：
+{{ i.stdout }}
+
+执行时间：{{ i.delta }}{% endfor %}
+                                    </textarea>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </main>
+    </div>
+</main>
 {% endblock %}
 
 {% block js %}
-    <script>
-        $(".host-name-select").change(function () {
-            $(".host-group-select").attr("disabled", true)
-        });
-        $(".host-group-select").change(function () {
-            $(".host-name-select").attr("disabled", true)
-        });
-        $(".command-input").change(function () {
-            $(".playbook-select").attr("disabled", true)
-        });
-        $(".playbook-select").change(function () {
-            $(".command-input").attr("disabled", true)
-        });
-        $(".form-action").keydown(function () {
-            if (event.keyCode == "13") {
-                $(".form-submit").click()
-            }
-        });
-    </script>
+<script>
+    $(".host-name-select").change(function () {
+        $(".host-group-select").attr("disabled", true)
+    });
+    $(".host-group-select").change(function () {
+        $(".host-name-select").attr("disabled", true)
+    });
+    $(".command-input").change(function () {
+        $(".playbook-select").attr("disabled", true)
+    });
+    $(".playbook-select").change(function () {
+        $(".command-input").attr("disabled", true)
+    });
+    $(".form-action").keydown(function () {
+        if (event.keyCode == "13") {
+            $(".form-submit").click()
+        }
+    });
+</script>
 {% endblock %}

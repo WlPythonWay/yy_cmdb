@@ -1,8 +1,10 @@
 from django.shortcuts import render, redirect, HttpResponse, get_object_or_404
 from .models import Asset
 from .forms import AssetForm
+from django.contrib.auth.decorators import login_required
 
 
+@login_required
 def index(request):
     if request.method == 'GET':
         id = request.GET.get('id', '')
@@ -25,6 +27,7 @@ def index(request):
     return render(request, 'asset/index.html', context)
 
 
+@login_required
 def update(request):
     if request.method == 'POST':
         host_name = request.POST.get('host_name')

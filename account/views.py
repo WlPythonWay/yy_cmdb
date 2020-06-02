@@ -26,6 +26,7 @@ def cmdb_login(request):
     return render(request, 'account/login.html', context)
 
 
+@login_required
 def cmdb_logout(request):
     logout(request)
     return redirect('account:login')
